@@ -1,9 +1,6 @@
 
 public class MoneyBox {
 	private int coin;
-	public void deposit(int coin) {
-		
-	}
 	
 	public void deposit(int coin, String message) {
 		this.coin = this.coin + coin;
