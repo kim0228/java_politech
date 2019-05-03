@@ -9,6 +9,7 @@ public class SumMachine {
 			sum = sum + i;		// sum += i;이랑 똑같은 의미이다.
 		}//end for
 		
+		
 		System.out.println("시작값: " + start);
 		System.out.println("종료값: " + end);
 		System.out.println("총 합: " + sum);
