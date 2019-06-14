@@ -1,0 +1,5 @@
+form {margin: 0 auto; padding: 10px; background: #eee;}
+label {display: inline-black; width: 200px; text-align: center;}
+label {display: inline-black; width: 300px;}
+form span{display: block; padding: 10px; }
+input[type="submit"] {display: inline-block; margin: 5px 0px 0px 140px;}
