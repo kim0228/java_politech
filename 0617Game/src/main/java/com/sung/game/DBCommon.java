@@ -47,9 +47,8 @@ public class DBCommon<T> {
 
 	public void createTable(T t) {
 		try {
-			Class<?> dataClass = t.getClass();
+			Class<?> dataClass = t.getClass(); // getclass는 현재 참조하고 있는 클래스를 확인할 수 있는 메소드이다. 
 			// Class.forName("com.politech.student.Student")
-
 			Field[] dataClassFields = dataClass.getDeclaredFields();
 			// student.getClass().getSimpleName()
 			String query = "";

@@ -120,7 +120,7 @@ public class HomeController {
 	
 	@RequestMapping(value = "/battle", method = RequestMethod.POST)
 	public String battle(Locale locale, Model model, HttpServletRequest request, @RequestParam("select1") String select1, @RequestParam("select2") String select2) {
-		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");
+		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");// 
 		int ps1 = Integer.parseInt(select1);
 		int ps2 = Integer.parseInt(select2);
 		HashMap<String, String> userData1 = dbCommon.detailsData(new Player(),ps1);
