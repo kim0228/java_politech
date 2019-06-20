@@ -118,18 +118,43 @@ public class HomeController {
 		return "redirect:/my_account";
 	}
 	
-	@RequestMapping(value = "/battle", method = RequestMethod.GET)
-	public String battle(Locale locale, Model model) {
+	@RequestMapping(value = "/battle", method = RequestMethod.POST)
+	public String battle(Locale locale, Model model, HttpServletRequest request, @RequestParam("select1") String select1, @RequestParam("select2") String select2) {
 		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");
-		model.addAttribute("select_result", dbCommon.selectDataTableTag(new Player()));
-		return "battle";
-	}
-	
-	@RequestMapping(value = "/player_data", method = RequestMethod.GET)
-	public String turning(Locale locale, Model model, @RequestParam("attackPower") int idx, @RequestParam("attackPower") int attackPower, @RequestParam("defensePower") int defensePower,
-			@RequestParam("attackRate") int attackRate,  @RequestParam("defenseRate") int defenseRate) {
-		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");
-		model.addAllAttributes(dbCommon.detailsData(new Player(), idx));
+		int ps1 = Integer.parseInt(select1);
+		int ps2 = Integer.parseInt(select2);
+		HashMap<String, String> userData1 = dbCommon.detailsData(new Player(),ps1);
+		HashMap<String, String> userData2 = dbCommon.detailsData(new Player(),ps2);
+		
+		String name1 = userData1.get("name");
+		String attackPower1 = userData1.get("attackPower");
+		String attackRate1 = userData1.get("attackRate");
+		String defensePower1 = userData1.get("defensePower");
+		String defenseRate1 = userData1.get("defenseRate");
+		
+		String name2 = userData2.get("name");
+		String attackPower2 = userData2.get("attackPower");
+		String attackRate2 = userData2.get("attackRate");
+		String defensePower2 = userData2.get("defensePower");
+		String defenseRate2 = userData2.get("defenseRate");
+		
+		
+		model.addAttribute("name1", name1);
+		model.addAttribute("attackPower1", attackPower1);
+		model.addAttribute("attackRate1", attackRate1);
+		model.addAttribute("defensePower1", defensePower1);
+		model.addAttribute("defenseRate1", defenseRate1);
+		
+		model.addAttribute("name2", name2);
+		model.addAttribute("attackPower2", attackPower2);
+		model.addAttribute("attackRate2", attackRate2);
+		model.addAttribute("defensePower2", defensePower2);
+		model.addAttribute("defenseRate2", defenseRate2);
+		
+		model.addAttribute("select_result",dbCommon.selectDataTableTag(new Player()));
+		
+		model.addAttribute("select1",name1);
+		model.addAttribute("select2",name2);
 		return "battle";
 	}
 	

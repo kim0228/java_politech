@@ -19,25 +19,23 @@
       <button class="turn">턴 진행</button>
     </div>
     <div class="battle_section">
-    <form action="player_data">
       <div class="player1">
         <span class="no">1</span>
-        <h3>이름</h3>
-        <span>공격력 : </span> ${attackPower }<br />
-        <span>방어력 : </span>${defensePower}<br />
-        <span>공격확률 : </span> ${attackRate}<br />
-        <span>방어확률 : </span> ${defenseRate}<br />
+        <h3>${name1}</h3>
+        <span>공격력 : </span> ${attackPower1}<br />
+        <span>방어력 : </span>${defensePower1}<br />
+        <span>공격확률 : </span> ${attackRate1}<br />
+        <span>방어확률 : </span> ${defenseRate1}<br />
       </div>
       <div class="player2">
         <span class="no">2</span>
-        <h3>이름</h3>
-        <span>공격력 : </span> ${attackPower }<br />
-        <span>방어력 : </span> ${defensePower}<br />
-        <span>공격확률 : </span> ${attackRate}<br />
-        <span>방어확률 : </span> ${defenseRate}<br />
+        <h3>${name2}</h3>
+        <span>공격력 : </span> ${attackPower2}<br />
+        <span>방어력 : </span> ${defensePower2}<br />
+        <span>공격확률 : </span> ${attackRate2}<br />
+        <span>방어확률 : </span> ${defenseRate2}<br />
       </div>
     </div>
-    </form>
   </div>
 </body>
 

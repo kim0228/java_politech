@@ -21,7 +21,7 @@
       ${select_result}
     </ul>
     <div class="select_section">
-      <form action="battle">
+      <form action="battle" method="post">
         <input type="text" name="select1" />
         <input type="text" name="select2" />
         <input type="submit" value="대전" />
