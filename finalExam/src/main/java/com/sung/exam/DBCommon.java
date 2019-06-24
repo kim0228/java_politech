@@ -1,4 +1,4 @@
-package com.politech.student;
+package com.sung.exam;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -86,7 +86,7 @@ public class DBCommon<T> {
 
 	public void insertData(T t) {
 		try {
-			Class<?> dataClass = t.getClass(); // 객체데이터에는 필드와 메소드가 존재하기 때문에 가져올 수 있다. 
+			Class<?> dataClass = t.getClass();
 			// Class.forName("com.politech.student.Student")
 
 			Field[] dataClassFields = dataClass.getDeclaredFields();
@@ -127,6 +127,7 @@ public class DBCommon<T> {
 			this.close();
 		}
 	}
+
 
 	public void updateData(T t, int whereIdx) {
 		try {
@@ -290,4 +291,57 @@ public class DBCommon<T> {
 		}
 		return null;
 	}
+	
+	public void searchData(T t, String searchFieldName, String searchValue) {
+		try {
+			Class<?> dataClass = t.getClass();
+			Field[] dataClassFields = dataClass.getDeclaredFields();
+			this.dataList = new ArrayList<T>();
+
+			if (this.connection == null) {
+				this.open();
+			}
+			String query = "SELECT * FROM " + this.tableName + " WHERE " + searchFieldName + " LIKE '%" + searchValue + "%';";
+			PreparedStatement preparedStatement = this.connection.prepareStatement(query);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				T fieldData = (T) dataClass.getDeclaredConstructor().newInstance();
+				for (Field field : dataClassFields) {
+					String fieldType = field.getType().toString();
+					String fieldName = field.getName();
+					if (fieldType.matches("int")) {
+						field.setInt(fieldData, resultSet.getInt(fieldName));
+					} else {
+						field.set(fieldData, resultSet.getString(fieldName));
+					}
+				}
+				this.dataList.add(fieldData);
+			}
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			this.close();
+		}
+	}
+	
+	public String searchDataTableTag(T t, String searchFieldName, String searchValue) {
+		this.searchData(t, searchFieldName, searchValue);
+		Class<?> dataClass = t.getClass();
+		String returnString = "";
+		for (int i = 0; i < this.dataList.size(); i++) {
+			try {
+				Method toTableTagStringMethod = dataClass.getDeclaredMethod("toTableTagString");
+				returnString = returnString + (String) toTableTagStringMethod.invoke(this.dataList.get(i));
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return returnString;
+	}
+
 }
