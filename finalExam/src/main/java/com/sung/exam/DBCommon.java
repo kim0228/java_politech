@@ -326,5 +326,22 @@ public class DBCommon<T> {
 			this.close();
 		}
 	}
+	
+	public String searchDataTableTag(T t, String searchFieldName, String searchValue) {
+		this.searchData(t, searchFieldName, searchValue);
+		Class<?> dataClass = t.getClass();
+		String returnString = "";
+		for (int i = 0; i < this.dataList.size(); i++) {
+			try {
+				Method toTableTagStringMethod = dataClass.getDeclaredMethod("toTableTagString");
+				returnString = returnString + (String) toTableTagStringMethod.invoke(this.dataList.get(i));
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return returnString;
+	}
 
 }

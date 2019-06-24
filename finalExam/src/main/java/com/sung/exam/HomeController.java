@@ -1,8 +1,10 @@
 package com.sung.exam;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.sqlite.SQLiteConfig;
 
 
 
@@ -58,7 +61,7 @@ public class HomeController {
 	}		
 		// 테스트
 		System.out.println("dfdf");
-		return "update";	
+		return "update";	 // redirect는 해당되는부분으로 넘긴다.
 }
 	
 	@RequestMapping(value = "/update_data", method = RequestMethod.GET)
@@ -69,4 +72,48 @@ public class HomeController {
 			System.out.println("aaa");
 			return "done";
 		}
+	
+	@RequestMapping(value = "/search_data", method = RequestMethod.GET)
+	public String searchData(Locale locale, Model model, @RequestParam("name") String name) {
+		DBCommon<Student> dbCommon = new DBCommon<Student>("c:\\tomcat\\studentScore.sqlite", "examscore");
+		model.addAttribute("select_result", dbCommon.searchDataTableTag(new Student(), "name", name));
+		//System.out.println("�˻���) "+name);
+		Connection connection = null;
+		try {
+			Class.forName("org.sqlite.JDBC");
+			SQLiteConfig config = new SQLiteConfig();
+			connection = DriverManager.getConnection("jdbc:sqlite:/c:\\tomcat\\studentScore.sqlite", config.toProperties()); // config는 읽기전용으로 열수도 있다.
+			
+			String query = "SELECT * FROM student190624 WHERE name LIKE '%" + name + "%'";
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			StringBuilder htmlString = new StringBuilder();
+
+			while (resultSet.next()) {
+				htmlString.append("<tr>");
+				String fieldName = resultSet.getString("name");
+				int idx = resultSet.getInt("idx");
+				int midScore = resultSet.getInt("midScore");
+				int finalScore = resultSet.getInt("finalScore");
+				htmlString.append("<td>" + idx + "</td>");
+				htmlString.append("<td>" + fieldName + "</td>");
+				htmlString.append("<td>" + midScore + "</td>");
+				htmlString.append("<td>" + finalScore + "</td>");
+				htmlString.append("</tr>");
+			}
+			model.addAttribute("select_result", htmlString);
+			preparedStatement.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		if (connection != null) {
+			try {
+			connection.close();
+			} catch (SQLException e) {
+			e.printStackTrace();
+			 }
+		}
+			connection = null;		
+		return "list2";
+	}
 }
