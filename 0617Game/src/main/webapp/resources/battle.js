@@ -4,5 +4,6 @@ $(document).on('click', '.turn', function(event){
   });
   $('.player2').animate({'top': 80, 'left': 270}, 300, function(){
     $('.player2').animate({'top': 100, 'left': 450}, 100);
+    $('[action="do_battle"]').submit();
   });
 });

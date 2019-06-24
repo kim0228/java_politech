@@ -29,6 +29,7 @@
    
       </li>
     </ul>
+    <a href="/game/secession">탈퇴하기</a>
   </div>
 </body>
 

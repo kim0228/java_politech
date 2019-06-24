@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -107,55 +108,137 @@ public class HomeController {
 	
 	@RequestMapping(value = "/change_card", method = RequestMethod.GET)
 	public String changeCard(Locale locale, Model model, HttpServletRequest request) {
-		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");
+//		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");
+//		HttpSession session = request.getSession();
+//		HashMap<String, String> userData = dbCommon.detailsData(new Player(), (Integer)session.getAttribute("user_idx"));
+//		int idx = Integer.parseInt(userData.get("idx"));
+//		String id = userData.get("id");
+//		String password = userData.get("password");
+//		String name = userData.get("name");
+//		dbCommon.updateData(new Player(id,password,name), idx);
+		
 		HttpSession session = request.getSession();
-		HashMap<String, String> userData = dbCommon.detailsData(new Player(), (Integer)session.getAttribute("user_idx"));
-		int idx = Integer.parseInt(userData.get("idx"));
-		String id = userData.get("id");
-		String password = userData.get("password");
-		String name = userData.get("name");
-		dbCommon.updateData(new Player(id,password,name), idx);
+		int idx = (Integer)session.getAttribute("user_idx");
+		Update2 update2 = new Update2();
+		update2.method2(idx);
 		return "redirect:/my_account";
 	}
 	
-	@RequestMapping(value = "/battle", method = RequestMethod.POST)
-	public String battle(Locale locale, Model model, HttpServletRequest request, @RequestParam("select1") String select1, @RequestParam("select2") String select2) {
+	@RequestMapping(value = "/battle", method = RequestMethod.GET)
+	public String battle(Locale locale, Model model, HttpServletRequest request, @RequestParam("select1") int select1, @RequestParam("select2") int select2) {
 		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");// 
-		int ps1 = Integer.parseInt(select1);
-		int ps2 = Integer.parseInt(select2);
-		HashMap<String, String> userData1 = dbCommon.detailsData(new Player(),ps1);
-		HashMap<String, String> userData2 = dbCommon.detailsData(new Player(),ps2);
+		HashMap<String, String> userData1 = dbCommon.detailsData(new Player(),select1);
+		HashMap<String, String> userData2 = dbCommon.detailsData(new Player(),select2);
+		model.addAttribute("select1_idx",userData1.get("idx"));
+		model.addAttribute("name1", userData1.get("name"));
+		model.addAttribute("attackPower1", userData1.get("attackPower"));
+		model.addAttribute("attackRate1", userData1.get("attackRate"));
+		model.addAttribute("defensePower1", userData1.get("defensePower"));
+		model.addAttribute("defenseRate1", userData1.get("defenseRate"));
+		int select1HP = 1000;
+		model.addAttribute("select1_hp",select1HP);
 		
-		String name1 = userData1.get("name");
-		String attackPower1 = userData1.get("attackPower");
-		String attackRate1 = userData1.get("attackRate");
-		String defensePower1 = userData1.get("defensePower");
-		String defenseRate1 = userData1.get("defenseRate");
-		
-		String name2 = userData2.get("name");
-		String attackPower2 = userData2.get("attackPower");
-		String attackRate2 = userData2.get("attackRate");
-		String defensePower2 = userData2.get("defensePower");
-		String defenseRate2 = userData2.get("defenseRate");
+		model.addAttribute("select2_idx",userData2.get("idx"));
+		model.addAttribute("name2", userData2.get("name"));
+		model.addAttribute("attackPower2", userData2.get("attackPower"));
+		model.addAttribute("attackRate2", userData2.get("attackRate"));
+		model.addAttribute("defensePower2", userData2.get("defensePower"));
+		model.addAttribute("defenseRate2",userData2.get("defenseRate"));
+		int select2HP = 1000;
+		model.addAttribute("select2_hp",select2HP);
 		
 		
-		model.addAttribute("name1", name1);
-		model.addAttribute("attackPower1", attackPower1);
-		model.addAttribute("attackRate1", attackRate1);
-		model.addAttribute("defensePower1", defensePower1);
-		model.addAttribute("defenseRate1", defenseRate1);
+		HttpSession session = request.getSession();
+		session.setAttribute("select1_idx", userData1.get("idx"));
+		session.setAttribute("name1", userData1.get("name"));
+		session.setAttribute("attackPower1", userData1.get("attackPower"));
+		session.setAttribute("attackRate1", userData1.get("defensePower"));
+		session.setAttribute("defensePower1", userData1.get("defensePower"));
+		session.setAttribute("defenseRate1", userData1.get("defenseRate"));
+		session.setAttribute("select1_hp", select1HP);
 		
-		model.addAttribute("name2", name2);
-		model.addAttribute("attackPower2", attackPower2);
-		model.addAttribute("attackRate2", attackRate2);
-		model.addAttribute("defensePower2", defensePower2);
-		model.addAttribute("defenseRate2", defenseRate2);
-		
-		model.addAttribute("select_result",dbCommon.selectDataTableTag(new Player()));
-		
-		model.addAttribute("select1",name1);
-		model.addAttribute("select2",name2);
+		session.setAttribute("select2_idx", userData2.get("idx"));
+		session.setAttribute("name2", userData2.get("name"));
+		session.setAttribute("attackPower2", userData2.get("attackPower"));
+		session.setAttribute("attackRate2", userData2.get("attackRate"));
+		session.setAttribute("defensePower2", userData2.get("defensePower"));
+		session.setAttribute("defenseRate2", userData2.get("defenseRate"));
+		session.setAttribute("select2_hp", select2HP);
 		return "battle";
+	}
+	
+	@RequestMapping(value = "/do_battle", method = RequestMethod.GET)
+	public String doBattle(Locale locale, Model model, HttpServletRequest request, @RequestParam("select1") int select1, @RequestParam("select2") int select2) {
+		HttpSession session = request.getSession();
+		
+		int select1Idx = Integer.parseInt((String)session.getAttribute("select1_idx"));
+		String select1Name = (String)session.getAttribute("name1");
+		int select1AttackPower = Integer.parseInt((String)session.getAttribute("attackPower1"));
+		int select1AttackRate = Integer.parseInt((String)session.getAttribute("attackRate1"));
+		int select1DefensePower = Integer.parseInt((String)session.getAttribute("defensePower1"));
+		int select1DefenseRate = Integer.parseInt((String)session.getAttribute("defenseRate1"));
+		int select1HP =  (Integer)session.getAttribute("select1_hp");
+		
+		int select2Idx = Integer.parseInt((String)session.getAttribute("select2_idx"));
+		String select2Name = (String)session.getAttribute("name2");
+		int select2AttackPower = Integer.parseInt((String)session.getAttribute("attackPower2"));
+		int select2AttackRate = Integer.parseInt((String)session.getAttribute("attackRate2"));
+		int select2DefensePower = Integer.parseInt((String)session.getAttribute("defensePower2"));
+		int select2DefenseRate = Integer.parseInt((String)session.getAttribute("defenseRate2"));
+		int select2HP =  (Integer)session.getAttribute("select2_hp");
+		
+		select1HP--;
+		select2HP--;
+		
+		model.addAttribute("select1_idx", select1Idx);
+		model.addAttribute("name1", select1Name);
+		model.addAttribute("attackPower1", select1AttackPower);
+		model.addAttribute("attackRate1", select1AttackRate);
+		model.addAttribute("defensePower1", select1DefensePower);
+		model.addAttribute("defenseRate1", select1DefenseRate);
+		model.addAttribute("select1_hp",select1HP);
+		
+		
+		model.addAttribute("select2_idx", select2Idx);
+		model.addAttribute("name2", select2Name);
+		model.addAttribute("attackPower2", select2AttackPower);
+		model.addAttribute("attackRate2", select2AttackRate);
+		model.addAttribute("defensePower2", select2DefensePower);
+		model.addAttribute("defenseRate2", select2DefenseRate);
+		model.addAttribute("select2_hp",select2HP);
+		
+		
+		Random rand = new Random();
+		model.addAttribute("random_number",rand.nextInt(9999999));
+		
+		
+		session.setAttribute("select1_idx", "" + select1Idx);
+		session.setAttribute("name1", "" + select1Name);
+		session.setAttribute("attackPower1", "" + select1AttackPower);
+		session.setAttribute("attackRate1", "" + select1AttackRate);
+		session.setAttribute("defensePower1", "" + select1DefensePower);
+		session.setAttribute("defenseRate1", "" + select1DefenseRate);
+		session.setAttribute("select1_hp", select1HP);
+		
+		session.setAttribute("select2_idx", "" + select2Idx);
+		session.setAttribute("name2", "" + select2Name);
+		session.setAttribute("attackPower2", "" + select2AttackPower);
+		session.setAttribute("attackRate2", "" + select2AttackRate);
+		session.setAttribute("defensePower2", "" + select2DefensePower);
+		session.setAttribute("defenseRate2", "" + select2DefenseRate);
+		session.setAttribute("select2_hp", select2HP);
+
+		return "battle";
+	}
+	
+	@RequestMapping(value = "/secession", method = RequestMethod.GET)
+	public String secession(Locale locale, Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		int idx = (Integer)session.getAttribute("user_idx");
+		Update2 update2 = new Update2();
+		update2.method3(idx);
+		session.invalidate(); // 세션 끊음
+		return "redirect:/";
 	}
 	
 
