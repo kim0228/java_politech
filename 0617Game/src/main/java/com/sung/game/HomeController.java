@@ -31,7 +31,7 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, Model model) { // String 타입은 단순하게 페이지를 열어주는 역할을 함.
 		DBCommon<Player> dbCommon = new DBCommon<Player>("c:\\tomcat\\game.sqlite", "player");
 		model.addAttribute("select_result", dbCommon.selectDataTableTag(new Player()));
 		return "list";
@@ -51,7 +51,7 @@ public class HomeController {
 	}
 	
 
-	@RequestMapping(value = "/do_join", method = RequestMethod.POST)
+	@RequestMapping(value = "/do_join", method = RequestMethod.POST) // post방식은 form으로 접근한다.
 	public String doJoin(Locale locale, Model model, HttpServletRequest request) {
 			MessageDigest md;
 			try {
