@@ -29,7 +29,7 @@ public class DBCommon<T> {
 			SQLiteConfig config = new SQLiteConfig();
 			this.connection = DriverManager.getConnection("jdbc:sqlite:/" + this.dbFileName, config.toProperties());
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); // printstacktrace는 순서대로 모든 에러 메시지를 출력함
 		}
 	}
 
@@ -135,7 +135,7 @@ public class DBCommon<T> {
 			Field[] dataClassFields = dataClass.getDeclaredFields();
 			String queryString = "";
 			for (Field field : dataClassFields) {
-				if (!queryString.isEmpty()) {
+				if (!queryString.isEmpty()) { // !는 부정의 의미로 not이라고 읽고, boolean의 값을 역전시키는 역할을 한다.
 					queryString = queryString + ",";
 				}
 				String fieldType = field.getType().toString();
