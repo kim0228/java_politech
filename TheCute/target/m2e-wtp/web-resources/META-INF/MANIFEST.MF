@@ -1,10 +1,5 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
-Built-By: SMART-11
+Built-By: SMART-02
 Build-Jdk: 1.8.0_151
-=======
-Built-By: rlatj
-Build-Jdk: 1.8.0_201
->>>>>>> 67c5db58ae0531b81ca83ad51837a8dfe58b92b8
 Created-By: Maven Integration for Eclipse
 

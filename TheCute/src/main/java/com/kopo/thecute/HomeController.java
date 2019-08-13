@@ -48,10 +48,10 @@ public class HomeController {
 	@ResponseBody
 	public int idCheck(Locale locale, Model model, @RequestParam(value="userId", required=false) String userid) {
 		DBCommon dbCommon = new DBCommon();
-//		System.out.println(userid);
+		System.out.println(userid);
 	    // 입력받은 id를 가지고 THECUTE_USER 테이블을 조회
 		int check = dbCommon.searchData(new User(), userid);
-//		System.out.println(check);
+		System.out.println(check);
 		return check;
 	}
 	
