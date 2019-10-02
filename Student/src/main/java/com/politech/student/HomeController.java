@@ -46,7 +46,7 @@ public class HomeController {
 		dbCommon.insertData(new Student(name,address,birthday_month + "/" + birthday_day, favoriteColor));
 		return "done";
 	}
-	@RequestMapping(value = "/modify", method = RequestMethod.GET)	
+	@RequestMapping(value = "/modify", method = RequestMethod.GET)
 	public String modify(Locale locale, Model model, @RequestParam("idx") int idx) {
 			DBCommon<Student> dbCommon = new DBCommon<Student>("c:\\tomcat\\student190527.sqlite", "student");
 			Student details = dbCommon.detailsData(new Student(), idx);

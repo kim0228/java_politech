@@ -12,7 +12,7 @@
 <body>
   <div id="wrap">
     <div class="top_button_section">
-      <a href="" class="top_button">목록으로</a>
+      <a href="/game" class="top_button">목록으로</a>
     </div>
     <p>
       ${message}.
